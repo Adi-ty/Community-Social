@@ -109,7 +109,7 @@ exports.followUser = async (req, res) => {
       await userToFollow.save();
 
       res.status(200).json({
-        succes: true,
+        success: true,
         message: "User Unfollowed",
       });
     } else {
