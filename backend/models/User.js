@@ -47,19 +47,19 @@ const userSchema = new mongoose.Schema({
         },
     ]
 });
-
+//encrypting password pre save 
 userSchema.pre("save", async function (next) {
-    if(this.isModified("password")) {
+    if(this.isModified("password")) { // if password is not modified do not encrypt it on every save 
         this.password = await bcrypt.hash(this.password, 10);
     }
 
     next();
 });
-
+//matching pasword for login
 userSchema.methods.matchPassword = async function (password) {
     return await bcrypt.compare(password, this.password);
 };
-
+// generating jwt token
 userSchema.methods.generateToken = function () {
     return jwt.sign({_id:this._id}, process.env.JWT_SECRET);
 };
