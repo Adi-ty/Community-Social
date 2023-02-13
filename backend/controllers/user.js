@@ -150,3 +150,69 @@ exports.followUser = async (req, res) => {
     });
   }
 };
+
+exports.updatePassword = async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id).select("+password");
+
+    const { oldPassword, newPassword } = req.body;
+
+    if (!oldPassword || !newPassword) {
+      return res.status(400).json({
+        success: false,
+        message: "Please Provide Old and New Password",
+      });
+    }
+
+    const isMatch = await user.matchPassword(oldPassword);
+
+    if (!isMatch) {
+      return res.status(400).json({
+        success: false,
+        message: "Incorrect Old Password",
+      });
+    }
+
+    user.password = newPassword;
+    await user.save(); //Password will get hashed pre save if modified in user model
+
+    res.status(200).json({
+      success: true,
+      message: "Password Updated",
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+exports.updateProfile = async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id);
+
+    const { name, email } = req.body;
+
+    if (name) {
+      user.name = name;
+    }
+    if (email) {
+      user.email = email;
+    }
+
+    //User Avatar to do
+
+    await user.save();
+
+    res.status(200).json({
+      success: true,
+      message: "Profile Updated",
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
