@@ -134,11 +134,11 @@ exports.getPostOfFollowing = async (req, res) => {
       owner: {
         $in: user.following, // $in operator in mongoDB => value of owner is equal to any value in user.following array
       },
-    });
+    }).populate("owner likes comments.user");
 
     res.status(200).json({
       success: true,
-      posts,
+      posts: posts.reverse(),
     });
   } catch (error) {
     console.log(error);

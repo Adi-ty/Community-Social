@@ -43,7 +43,47 @@ export const loadUser = () => async (dispatch) => {
   } catch (error) {
     dispatch({
       type: "LoadUserFailure",
-      payload: error,
+      payload: error.response.data.message,
+    });
+  }
+};
+
+export const getFollowingPosts = () => async (dispatch) => {
+  try {
+    dispatch({
+      type: "postOfFollowingRequest",
+    });
+
+    const { data } = await axios.get("/api/v1/posts");
+
+    dispatch({
+      type: "postOfFollowingSuccess",
+      payload: data.posts,
+    });
+  } catch (error) {
+    dispatch({
+      type: "postOfFollowingFailure",
+      payload: error.response.data.message,
+    });
+  }
+};
+
+export const getAllUsers = () => async (dispatch) => {
+  try {
+    dispatch({
+      type: "allUsersRequest",
+    });
+
+    const { data } = await axios.get("/api/v1/users");
+
+    dispatch({
+      type: "allUsersSuccess",
+      payload: data.users,
+    });
+  } catch (error) {
+    dispatch({
+      type: "allUsersFailure",
+      payload: error.response.data.message,
     });
   }
 };
