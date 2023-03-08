@@ -1,6 +1,6 @@
 import axios from "axios";
 
-export const loginUser = (email, Password) => async (dispatch) => {
+export const loginUser = (email, password) => async (dispatch) => {
   try {
     dispatch({
       type: "LoginRequest",
@@ -8,7 +8,7 @@ export const loginUser = (email, Password) => async (dispatch) => {
 
     const { data } = await axios.post(
       "/api/v1/login",
-      { email, Password },
+      { email, password },
       {
         headers: {
           "Content-Type": "application/json",
@@ -23,6 +23,26 @@ export const loginUser = (email, Password) => async (dispatch) => {
   } catch (error) {
     dispatch({
       type: "LoginFailure",
+      payload: error,
+    });
+  }
+};
+
+export const loadUser = () => async (dispatch) => {
+  try {
+    dispatch({
+      type: "LoadUserRequest",
+    });
+
+    const { data } = await axios.get("/api/v1/me");
+
+    dispatch({
+      type: "LoadUserSuccess",
+      payload: data.user,
+    });
+  } catch (error) {
+    dispatch({
+      type: "LoadUserFailure",
       payload: error,
     });
   }
